@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { ChatInput } from '@/components/ChatInput';
 import { ChatMessage } from '@/components/ChatMessage';
 import { HistorySidebar } from '@/components/HistorySidebar';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { ExportMenu } from '@/components/ExportMenu';
 import { useAppStore } from '@/lib/store';
 import { ThinkingIndicator } from '@/components/ThinkingIndicator';
@@ -132,7 +131,6 @@ export function AppShell() {
         </div>
         <div className="flex items-center gap-2">
           {currentSession && <ExportMenu />}
-          <ThemeToggle />
         </div>
       </header>
 
