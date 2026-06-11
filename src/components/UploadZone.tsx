@@ -48,7 +48,7 @@ export function UploadZone() {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       <Card
-        className="glass shadow-glass cursor-pointer transition-all duration-300 hover:shadow-2xl"
+        className="bg-white/5 backdrop-blur-md shadow-glass cursor-pointer transition-all duration-300 hover:shadow-2xl text-white/90 border-white/10"
         onClick={() => inputRef.current?.click()}
       >
         <CardContent className="p-12">

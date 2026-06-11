@@ -7,7 +7,7 @@ export default function Home() {
   const { data } = useAppStore();
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="h-screen flex flex-col bg-black">
       {data.length === 0 ? <Hero /> : <AppShell />}
     </div>
   );

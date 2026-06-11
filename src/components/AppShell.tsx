@@ -8,6 +8,7 @@ import { HistorySidebar } from '@/components/HistorySidebar';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { ExportMenu } from '@/components/ExportMenu';
 import { useAppStore } from '@/lib/store';
+import { ThinkingIndicator } from '@/components/ThinkingIndicator';
 import { DataTable } from '@/components/DataTable';
 
 export function AppShell() {
@@ -179,6 +180,7 @@ export function AppShell() {
               {messages.map((m) => (
                 <ChatMessage key={m.id} message={m} />
               ))}
+              {isAnalyzing && <ThinkingIndicator />}
             </div>
           </div>
 
