@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { BarChart3, Sparkles, Menu, Loader2 } from 'lucide-react';
+import { BarChart3, Sparkles, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { UploadZone } from '@/components/UploadZone';
 import { ChatInput } from '@/components/ChatInput';
@@ -18,7 +18,6 @@ export default function Home() {
     data,
     addUserMessage,
     startStreaming,
-    appendStreamChunk,
     finishStreaming,
     isAnalyzing,
   } = useAppStore();

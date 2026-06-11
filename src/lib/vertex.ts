@@ -1,5 +1,3 @@
-import gcpCredentials from './gcp.json';
-
 interface GeminiResponse {
   candidates?: Array<{
     content?: { parts?: Array<{ text?: string }> };
@@ -8,6 +6,30 @@ interface GeminiResponse {
 
 const project = process.env.GCP_PROJECT_ID || 'algolab-492207';
 const location = process.env.GCP_LOCATION || 'us-central1';
+
+// Credentials: base64-encoded JSON in env var (Vercel secrets friendly)
+function getCredentials(): { client_email: string; private_key: string } {
+  const b64 = process.env.GCP_JSON_BASE64;
+  if (!b64) {
+    throw new Error(
+      '[vertex] GCP_JSON_BASE64 env var not set. Base64-encode your gcp.json and add it.'
+    );
+  }
+  try {
+    const json = Buffer.from(b64, 'base64').toString('utf-8');
+    const creds = JSON.parse(json);
+    if (!creds.client_email || !creds.private_key) {
+      throw new Error('Missing client_email or private_key');
+    }
+    return creds;
+  } catch (e) {
+    throw new Error(
+      '[vertex] Failed to decode GCP_JSON_BASE64: ' +
+        (e instanceof Error ? e.message : String(e)),
+      { cause: e }
+    );
+  }
+}
 
 // Try each model in order; first success wins.
 // Model names change frequently across GCP projects/regions.
@@ -24,7 +46,7 @@ const MODELS = [
 ];
 
 async function getAccessToken(): Promise<string> {
-  const creds = gcpCredentials as { client_email: string; private_key: string };
+  const creds = getCredentials();
   const jwt = (await import('jsonwebtoken')).default;
 
   const now = Math.floor(Date.now() / 1000);
@@ -178,12 +200,11 @@ function generateMock(
   const sample = (dataSample as Record<string, unknown>[]) || [];
   const totalRows = p?.totalRows || sample.length || 12;
 
-  /* eslint-disable no-useless-assignment */
-  let chartType: string = 'bar';
-  let title: string = 'Analysis Results';
-  let data: Array<{ name: string; value: number }> = [];
-  let findings: string = '';
-  let limitations =
+  let chartType = 'bar';
+  let title = 'Analysis Results'; // eslint-disable-line no-useless-assignment
+  let data: Array<{ name: string; value: number }> = []; // eslint-disable-line no-useless-assignment
+  let findings = ''; // eslint-disable-line no-useless-assignment
+  const limitations =
     'Based on sample data. Full dataset may show different patterns.';
 
   if (sample.length > 0 && cols.length > 0) {
@@ -239,58 +260,60 @@ function generateMock(
       chartType = 'pie';
       const agg: Record<string, number> = {};
       for (const row of sample) {
-        const key = String(row[firstCol] || 'Other');
-        agg[key] = (agg[key] || 0) + 1;
+        const key = String(row[firstCol] || 'Unknown');
+        const val = Number(row[valueCol]) || 0;
+        agg[key] = (agg[key] || 0) + val;
       }
-      data = Object.entries(agg).map(([name, value]) => ({ name, value }));
+      data = Object.entries(agg)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 6)
+        .map(([name, value]) => ({ name, value }));
       title = `${firstCol} Distribution`;
-      findings = `${data.length} ${firstCol} categories. Largest: ${data.sort((a, b) => b.value - a.value)[0]?.name || 'N/A'}.`;
+      findings = `${firstCol} breakdown: ${data.map((d) => `${d.name} (${d.value})`).join(', ')}.`;
     } else {
       const agg: Record<string, number> = {};
       for (const row of sample) {
         const key = String(row[firstCol] || 'Unknown');
-        const val = Number(row[valueCol]) || 1;
+        const val = Number(row[valueCol]) || 0;
         agg[key] = (agg[key] || 0) + val;
       }
       data = Object.entries(agg)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 8)
         .map(([name, value]) => ({ name, value }));
-      title = `${valueCol} by ${firstCol}`;
-      const total = data.reduce((s, d) => s + d.value, 0);
-      findings = `Total ${valueCol}: ${total.toFixed(0)} across ${data.length} ${firstCol} categories. Top: ${data[0]?.name || 'N/A'}.`;
+      title = `${firstCol} vs ${valueCol}`;
+      const total = data.reduce((s, d) => s + d.value, 0) || 1;
+      findings = `${data.length} ${firstCol} categories. Total ${valueCol}: ${total.toFixed(0)}. Average per ${firstCol}: ${(total / data.length).toFixed(0)}.`;
     }
   } else {
     data = [
-      { name: 'A', value: 4200 },
-      { name: 'B', value: 3100 },
-      { name: 'C', value: 2800 },
-      { name: 'D', value: 1900 },
+      { name: 'Sample A', value: Math.floor(Math.random() * 5000) + 1000 },
+      { name: 'Sample B', value: Math.floor(Math.random() * 5000) + 1000 },
+      { name: 'Sample C', value: Math.floor(Math.random() * 5000) + 1000 },
     ];
-    title = 'Demo Data';
-    findings = 'Demo mode. Upload data for real analysis.';
-  }
-
-  if (q.includes('correl') || q.includes('relationship')) {
-    limitations =
-      'Correlation does not imply causation. External factors may influence results.';
+    title = 'Sample Analysis';
+    findings =
+      'Generated from sample data. Upload your dataset for real insights.';
   }
 
   return {
     chartConfig: {
-      type: chartType,
+      type: chartType as 'bar',
       title,
-      xAxis: cols[0]?.name || 'Category',
-      yAxis: cols.find((c) => c.type === 'number')?.name || 'Value',
+      xAxis: cols[0]?.name || 'category',
+      yAxis: cols.find((c) => c.type === 'number')?.name || 'value',
       data,
     },
     findings,
     limitations,
-    stats: { totalRows, matchingRows: totalRows },
+    stats: {
+      totalRows,
+      matchingRows: sample.length,
+    },
     suggestions: [
-      'Explore another dimension',
-      'Check trends over time',
-      'View raw data table',
+      'Analyze sales trends over different time periods',
+      'Compare performance across different segments',
+      'Investigate factors behind top performers',
     ],
   };
 }

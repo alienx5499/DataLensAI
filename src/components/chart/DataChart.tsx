@@ -2,8 +2,6 @@
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   ScatterChart,
