@@ -56,7 +56,7 @@ export function DataTable({
         </div>
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
           <p className="text-xs text-muted-foreground">
-            {page * pageSize + 1}–{Math.min((page + 1) * pageSize, data.length)}{' '}
+            {page * pageSize + 1}-{Math.min((page + 1) * pageSize, data.length)}{' '}
             of {data.length}
           </p>
           <div className="flex gap-1">

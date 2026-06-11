@@ -14,7 +14,7 @@ interface GeminiResponse {
 export { getAccessToken } from './auth';
 export { buildUrl, MODELS } from './models';
 export { generateMock } from './mock';
-export type { ColumnInfo } from './mock';
+export type { ColumnInfo } from './types';
 export { buildSystemPrompt } from './prompt';
 
 export async function* streamAnalysis(

@@ -13,14 +13,14 @@ export async function POST(request: NextRequest) {
     return new NextResponse(JSON.stringify(session, null, 2), {
       headers: {
         'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="datalens-${session.fileName}.json"`,
+        'Content-Disposition': `attachment; filename='datalens-${session.fileName}.json'`,
       },
     });
   }
 
   const rows: string[] = ['question,findings,limitations,timestamp'];
   for (const e of session.entries) {
-    const safe = (s: string) => `"${s.replace(/"/g, '""')}"`;
+    const safe = (s: string) => `'${s.replace(/'/g, "''")}'`;
     rows.push(
       [
         safe(e.question),
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   return new NextResponse(rows.join('\n'), {
     headers: {
       'Content-Type': 'text/csv',
-      'Content-Disposition': `attachment; filename="datalens-${session.fileName}.csv"`,
+      'Content-Disposition': `attachment; filename='datalens-${session.fileName}.csv'`,
     },
   });
 }

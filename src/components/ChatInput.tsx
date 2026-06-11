@@ -56,7 +56,7 @@ export function ChatInput({
               submit();
             }
           }}
-          placeholder="Ask anything about your data…"
+          placeholder="Ask anything about your data..."
           rows={1}
           disabled={isLoading}
           className="flex-1 bg-transparent border-0 outline-none resize-none px-3 py-2 text-sm placeholder:text-muted-foreground/60 max-h-40"
