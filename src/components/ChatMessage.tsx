@@ -2,6 +2,7 @@
 import { AlertCircle, Loader2, Sparkles, User } from 'lucide-react';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import { DataChart } from './chart/DataChart';
+import { FindingsRenderer } from './FindingsRenderer';
 import { ChartCard } from './chart/ChartCard';
 
 export function ChatMessage({ message }: { message: ChatMessageType }) {
@@ -66,9 +67,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
         {result && (
           <>
             <div className="glass rounded-2xl rounded-tl-md px-4 py-3">
-              <p className="text-sm leading-relaxed text-pretty">
-                {result.findings}
-              </p>
+              <FindingsRenderer text={result.findings} />
             </div>
             {result.limitations && (
               <div className="flex items-start gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20">

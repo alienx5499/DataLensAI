@@ -43,6 +43,14 @@ function aggregate(
     .map(([name, value]) => ({ name, value }));
 }
 
+function formatNum(n: number): string {
+  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+}
+
+function formatPct(n: number): string {
+  return `${Math.round(n * 100)}%`;
+}
+
 export function generateMock(
   question: string,
   profile: unknown,
@@ -64,7 +72,7 @@ export function generateMock(
     return {
       chartConfig: {
         type: 'bar' as const,
-        title: 'DataLensAI at a glance',
+        title: 'DataLensAI — at a glance',
         xAxis: 'capability',
         yAxis: 'coverage',
         data: [
@@ -75,14 +83,13 @@ export function generateMock(
         ],
       },
       findings:
-        "I'm DataLensAI — an autonomous data analysis agent. Upload a CSV, JSON, or Excel file and ask plain-English questions. I'll pick the right chart, summarize the findings, and flag what the data can't tell us.",
+        "I'm DataLensAI — your autonomous data analysis partner. Upload any data file and ask questions in plain English. I surface the right visualization, synthesize findings, and flag limitations honestly. No SQL, no Python — just answers.\n\n**Try asking me**:\n• Show me the top performers\n• Plot a trend over time\n• Break down by category",
       limitations:
-        'No live AI in demo mode; responses are template-driven from your data shape.',
+        'Demo mode: responses are generated from your data shape. For richer AI insights, enable Vertex AI.',
       suggestions: [
-        'Show me the top 5 rows',
-        'What columns are in this dataset?',
+        'Show me the top performers',
         'Plot a trend over time',
-        'Break down the data by category',
+        'Break down by category',
       ],
       stats: { totalRows, matchingRows: sample.length },
     };
@@ -101,15 +108,27 @@ export function generateMock(
       q.includes('top') ||
       q.includes('highest') ||
       q.includes('best') ||
-      q.includes('most') ||
-      q.includes('leader')
+      q.includes('leader') ||
+      q.includes('most')
     ) {
       const agg = aggregate(sample, catCol, numCol).slice(0, 8);
       data = agg;
       title = `Top ${catCol} by ${numCol}`;
       const top3 = agg.slice(0, 3).reduce((s, d) => s + d.value, 0);
       const total = agg.reduce((s, d) => s + d.value, 0) || 1;
-      findings = `Top 3 ${catCol} contribute ${Math.round((top3 / total) * 100)}% of total ${numCol}. Leader: ${agg[0]?.name || 'N/A'} with ${agg[0]?.value.toLocaleString() || 0}.`;
+      const topPer = top3 / total;
+      const lead = agg[0]?.name || 'N/A';
+      findings =
+        `Here's how ${catCol} ranks by ${numCol}:\n\n` +
+        `The leader is **${lead}** at ${formatNum(agg[0]?.value || 0)}, ` +
+        `accounting for ${formatPct((agg[0]?.value || 0) / total)} of all ${numCol}.\n\n` +
+        `Top 3 breakdown:\n` +
+        agg
+          .slice(0, 3)
+          .map((d) => `• **${d.name}** — ${formatNum(d.value)}`)
+          .join('\n') +
+        `\n\nTotal ${numCol} across all groups: **${formatNum(total)}**.\n\n` +
+        `**Recommendation**: double down on the leader's pattern — it contributes ${formatPct(topPer)} of the top 3.`;
     } else if (
       q.includes('improve') ||
       q.includes('forecast') ||
@@ -128,11 +147,19 @@ export function generateMock(
         name: tail[i]?.name || `P${i + 1}`,
         value: v,
       }));
-      title = `Forecast candidates — ${catCol} vs ${numCol}`;
+      title = `Growth potential — ${catCol} vs ${numCol}`;
       const sorted = [...agg].sort((a, b) => a.value - b.value);
       const weakest = sorted.slice(0, 3);
       const avg = values.reduce((s, v) => s + v, 0) / (values.length || 1);
-      findings = `Lowest ${catCol} (best improvement targets): ${weakest.map((d) => `${d.name} (${d.value.toLocaleString()})`).join(', ')}. Current average ${numCol}: ${avg.toFixed(0)}. Lifting the bottom 3 toward the mean would add ~${weakest.reduce((s, d) => s + (avg - d.value), 0).toFixed(0)} ${numCol}.`;
+      const potential = weakest.reduce((s, d) => s + (avg - d.value), 0);
+      findings =
+        `Growth opportunities I see:\n\n` +
+        `The lowest performers are **${weakest.map((d) => d.name).join(', ')}** — ` +
+        `these are your biggest improvement targets.\n\n` +
+        `• Current average ${numCol}: **${formatNum(avg)}**\n` +
+        `• Potential lift: **+${formatNum(potential)}** if bottom reach average\n` +
+        `• These 3 groups are dragging the dataset down by **${formatNum(sorted[0]?.value || 0)}** below the mean\n\n` +
+        `**Action**: replicate what's working in the top groups, then apply to the bottom 3.`;
     } else if (
       q.includes('trend') ||
       q.includes('over time') ||
@@ -149,26 +176,53 @@ export function generateMock(
       title = `${numCol} trend across ${catCol}`;
       const values = tail.map((d) => d.value);
       const avg = values.reduce((s, v) => s + v, 0) / (values.length || 1);
-      const trend =
+      const max = Math.max(...values);
+      const min = Math.min(...values);
+      const direction =
         values.length > 1 && values[values.length - 1] > values[0]
-          ? 'increasing'
-          : 'flat or decreasing';
-      findings = `${numCol} is ${trend} across the period. Range: ${Math.min(...values).toFixed(0)} to ${Math.max(...values).toFixed(0)}. Average: ${avg.toFixed(0)}.`;
+          ? 'upward'
+          : values[values.length - 1] < values[0]
+            ? 'downward'
+            : 'stable';
+      const swing = max - min;
+      findings =
+        `**${numCol} is trending ${direction}** across the period.\n\n` +
+        `• Range: **${formatNum(min)} → ${formatNum(max)}** (swing of ${formatNum(swing)})\n` +
+        `• Average: **${formatNum(avg)}**\n` +
+        `• Showing ${values.length} data points across ${catCol}\n\n` +
+        `**Takeaway**: the ${direction} trend suggests ${
+          direction === 'upward'
+            ? 'positive momentum — keep doing what works'
+            : 'a need to investigate what is slowing the curve'
+        }.`;
     } else if (
       q.includes('distribut') ||
       q.includes('breakdown') ||
       q.includes('split') ||
       q.includes('share') ||
-      q.includes('proportion')
+      q.includes('proportion') ||
+      q.includes('pie')
     ) {
       chartType = 'pie';
       const agg = aggregate(sample, catCol, numCol).slice(0, 6);
       data = agg;
       title = `${catCol} distribution`;
       const total = agg.reduce((s, d) => s + d.value, 0) || 1;
-      findings = `${catCol} split: ${agg
-        .map((d) => `${d.name} ${Math.round((d.value / total) * 100)}%`)
-        .join(', ')}.`;
+      findings =
+        `Here's how ${catCol} breaks down:\n\n` +
+        agg
+          .slice(0, 4)
+          .map(
+            (d) =>
+              `• **${d.name}** — ${formatPct(d.value / total)} (${formatNum(d.value)})`
+          )
+          .join('\n') +
+        `\n\nTotal across all groups: **${formatNum(total)}**.\n\n` +
+        `**Insight**: ${
+          agg[0]
+            ? `${agg[0].name} dominates with ${formatPct((agg[0].value || 0) / total)}`
+            : 'The distribution is fairly even'
+        }.`;
     } else if (
       q.includes('correlat') ||
       q.includes('relationship') ||
@@ -187,7 +241,12 @@ export function generateMock(
       title = `${catCol} vs ${xCol}`;
       const values = data.map((d) => d.value);
       const avg = values.reduce((s, v) => s + v, 0) / (values.length || 1);
-      findings = `Scatter of ${data.length} points across ${catCol}. Mean ${xCol}: ${avg.toFixed(0)}. Range: ${Math.min(...values).toFixed(0)}–${Math.max(...values).toFixed(0)}.`;
+      findings =
+        `Relationship between **${catCol}** and **${xCol}**:\n\n` +
+        `• ${data.length} paired observations\n` +
+        `• Mean ${xCol}: **${formatNum(avg)}**\n` +
+        `• Range: **${formatNum(Math.min(...values))}–${formatNum(Math.max(...values))}**\n\n` +
+        `**Note**: with only ${data.length} points, any correlation is preliminary — load more data to confirm.`;
     } else if (
       q.includes('average') ||
       q.includes('mean') ||
@@ -199,13 +258,49 @@ export function generateMock(
       title = `${numCol} totals by ${catCol}`;
       const total = agg.reduce((s, d) => s + d.value, 0);
       const avg = total / (agg.length || 1);
-      findings = `Across ${agg.length} ${catCol} groups: total ${numCol} ${total.toFixed(0)}, average ${avg.toFixed(0)} per ${catCol}.`;
+      findings =
+        `Here's the aggregate view:\n\n` +
+        `• **Total ${numCol}**: ${formatNum(total)}\n` +
+        `• **Average per ${catCol}**: ${formatNum(avg)}\n` +
+        `• **Groups in dataset**: ${agg.length}\n\n` +
+        `**Sanity check**: ${total > 0 ? `the data shows real signal` : `the data sums to 0 — check your input`}.`;
+    } else if (
+      q.includes('how') ||
+      q.includes('why') ||
+      q.includes('explain') ||
+      q.includes('describe') ||
+      q.includes('what is') ||
+      q.includes('tell me') ||
+      q.includes('fast') ||
+      q.includes('quick') ||
+      q.includes('detail') ||
+      q.includes('more')
+    ) {
+      const agg = aggregate(sample, catCol, numCol);
+      data = agg.slice(0, 6);
+      title = `${catCol} — ${numCol}`;
+      const total = agg.reduce((s, d) => s + d.value, 0);
+      const avg = total / (agg.length || 1);
+      const range = [...agg].sort((a, b) => b.value - a.value);
+      findings =
+        `You asked: **"${question.trim()}"**\n\n` +
+        `Here's what I see in your data:\n\n` +
+        `• **${agg.length}** ${catCol} groups, totaling **${formatNum(total)}** ${numCol}\n` +
+        `• **Average per group**: ${formatNum(avg)}\n` +
+        `• **Top performer**: ${range[0]?.name || 'N/A'} with **${formatNum(range[0]?.value || 0)}**\n` +
+        `• **${sample.length}** rows processed in this sample\n\n` +
+        `**Want to go deeper?** Try a follow-up like "which group has the highest variance?" or "break down the top performer".`;
     } else {
       const agg = aggregate(sample, catCol, numCol).slice(0, 8);
       data = agg;
       title = `${catCol} vs ${numCol}`;
       const total = agg.reduce((s, d) => s + d.value, 0) || 1;
-      findings = `Answer to "${question.trim()}": ${agg.length} ${catCol} groups observed. Total ${numCol} ${total.toFixed(0)}; average per ${catCol} ${(total / agg.length).toFixed(0)}. Top group: ${agg[0]?.name || 'N/A'}.`;
+      findings =
+        `Got it — here's my read on **"${question.trim()}"**:\n\n` +
+        `• **${agg.length}** ${catCol} groups found\n` +
+        `• **Total ${numCol}**: ${formatNum(total)}\n` +
+        `• **Top**: ${agg[0]?.name || 'N/A'} leads with **${formatNum(agg[0]?.value || 0)}**\n\n` +
+        `Ask a follow-up to drill into any specific group.`;
     }
   } else {
     data = [
@@ -214,7 +309,7 @@ export function generateMock(
       { name: 'Sample C', value: Math.floor(Math.random() * 5000) + 1000 },
     ];
     title = 'Sample Analysis';
-    findings = `Answer to "${question.trim()}": no data uploaded yet — showing placeholder series.`;
+    findings = `Upload data to see real analysis — currently showing placeholder values.`;
   }
 
   return {
@@ -229,8 +324,8 @@ export function generateMock(
     limitations,
     suggestions: [
       'Show me the top performers',
-      'Which groups could improve the most?',
-      'Plot the trend over time',
+      'Plot a trend over time',
+      'Break down by category',
     ],
     stats: { totalRows, matchingRows: sample.length },
   };
