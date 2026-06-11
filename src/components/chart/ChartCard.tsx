@@ -14,7 +14,9 @@ export function ChartCard({
   return (
     <Card className="glass shadow-glass">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium tracking-tight">{title}</CardTitle>
+        <CardTitle className="text-base font-medium tracking-tight">
+          {title}
+        </CardTitle>
         {caption && (
           <p className="text-xs text-muted-foreground mt-1 text-pretty">
             {caption}

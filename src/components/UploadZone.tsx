@@ -73,7 +73,9 @@ export function UploadZone() {
               type="file"
               accept=".csv,.json,.xlsx,.xls"
               className="hidden"
-              onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+              onChange={(e) =>
+                e.target.files?.[0] && handleFile(e.target.files[0])
+              }
             />
             {isLoading ? (
               <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />

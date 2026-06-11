@@ -9,7 +9,11 @@ interface ChatInputProps {
   suggestions?: string[];
 }
 
-export function ChatInput({ onSend, isLoading, suggestions = [] }: ChatInputProps) {
+export function ChatInput({
+  onSend,
+  isLoading,
+  suggestions = [],
+}: ChatInputProps) {
   const [value, setValue] = useState('');
   const ref = useRef<HTMLTextAreaElement>(null);
 

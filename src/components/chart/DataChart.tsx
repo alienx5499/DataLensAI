@@ -52,10 +52,17 @@ export function DataChart({ config }: { config: ChartConfig }) {
     );
   }
 
-  if (effectiveType === 'bar' || effectiveType === 'distribution' || effectiveType === 'heatmap') {
+  if (
+    effectiveType === 'bar' ||
+    effectiveType === 'distribution' ||
+    effectiveType === 'heatmap'
+  ) {
     return (
       <ResponsiveContainer width="100%" height={320}>
-        <BarChart data={data} margin={{ top: 10, right: 10, bottom: 10, left: 0 }}>
+        <BarChart
+          data={data}
+          margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+        >
           <defs>
             <linearGradient id="emeraldBar" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={EMERALD} stopOpacity={1} />
@@ -82,7 +89,10 @@ export function DataChart({ config }: { config: ChartConfig }) {
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip cursor={{ fill: 'rgba(16, 185, 129, 0.08)' }} contentStyle={tooltipStyle} />
+          <Tooltip
+            cursor={{ fill: 'rgba(16, 185, 129, 0.08)' }}
+            contentStyle={tooltipStyle}
+          />
           <Bar
             dataKey="value"
             fill="url(#emeraldBar)"
@@ -97,7 +107,10 @@ export function DataChart({ config }: { config: ChartConfig }) {
   if (effectiveType === 'line') {
     return (
       <ResponsiveContainer width="100%" height={320}>
-        <AreaChart data={data} margin={{ top: 10, right: 10, bottom: 10, left: 0 }}>
+        <AreaChart
+          data={data}
+          margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+        >
           <defs>
             <linearGradient id="emeraldArea" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={EMERALD} stopOpacity={0.3} />
@@ -191,7 +204,10 @@ export function DataChart({ config }: { config: ChartConfig }) {
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={tooltipStyle} />
+          <Tooltip
+            cursor={{ strokeDasharray: '3 3' }}
+            contentStyle={tooltipStyle}
+          />
           <Scatter data={data} fill={EMERALD} animationDuration={800} />
         </ScatterChart>
       </ResponsiveContainer>

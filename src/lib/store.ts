@@ -1,7 +1,13 @@
 'use client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AnalysisSession, AnalysisEntry, ChatMessage, DataProfile, AnalysisResult } from '@/types';
+import type {
+  AnalysisSession,
+  AnalysisEntry,
+  ChatMessage,
+  DataProfile,
+  AnalysisResult,
+} from '@/types';
 
 interface AppState {
   currentSession: AnalysisSession | null;
@@ -42,7 +48,10 @@ export const useAppStore = create<AppState>()(
           currentSession: session,
           data,
           messages: [],
-          history: [session, ...get().history.filter((s) => s.id !== session.id)],
+          history: [
+            session,
+            ...get().history.filter((s) => s.id !== session.id),
+          ],
         });
       },
 
@@ -94,7 +103,9 @@ export const useAppStore = create<AppState>()(
         };
         set({
           messages: messages.map((m) =>
-            m.id === id ? { ...m, isStreaming: false, result, content: result.findings } : m
+            m.id === id
+              ? { ...m, isStreaming: false, result, content: result.findings }
+              : m
           ),
           currentSession: updatedSession,
           history: get().history.map((s) =>
@@ -108,7 +119,7 @@ export const useAppStore = create<AppState>()(
         set({
           currentSession: session,
           data: [],
-          messages: ([
+          messages: [
             ...session.entries.map((e) => ({
               id: e.id,
               role: 'user' as const,
@@ -128,7 +139,7 @@ export const useAppStore = create<AppState>()(
               },
               timestamp: e.timestamp,
             })),
-          ]) as ChatMessage[],
+          ] as ChatMessage[],
         });
       },
 

@@ -11,7 +11,12 @@ export function HistorySidebar({ onClose }: { onClose?: () => void }) {
       <div className="p-4 border-b border-border flex items-center justify-between">
         <h2 className="text-sm font-semibold tracking-tight">History</h2>
         {onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose} className="md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="md:hidden"
+          >
             <X className="w-4 h-4" />
           </Button>
         )}
