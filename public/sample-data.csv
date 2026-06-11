@@ -1,0 +1,13 @@
+date,product,region,sales,quantity,rep
+2026-01-15,Pro Plan,North America,12500,25,Alice
+2026-01-22,Starter,Europe,3200,32,Bob
+2026-02-03,Pro Plan,Asia,8900,18,Carol
+2026-02-14,Enterprise,North America,45000,5,Alice
+2026-02-28,Starter,Europe,4100,41,Bob
+2026-03-05,Pro Plan,North America,15200,30,Alice
+2026-03-18,Enterprise,Asia,38000,4,Carol
+2026-03-25,Starter,South America,2800,28,Diego
+2026-04-02,Pro Plan,Europe,11500,23,Bob
+2026-04-15,Enterprise,North America,52000,6,Alice
+2026-04-28,Starter,Asia,3600,36,Carol
+2026-05-10,Pro Plan,South America,7800,16,Diego
