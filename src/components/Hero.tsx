@@ -39,7 +39,7 @@ export function Hero() {
         </h1>
         <p className="text-base md:text-lg text-white/70 mt-6 text-pretty max-w-xl mx-auto">
           Drop in a CSV. Get rigorous analysis with charts, plain-English
-          findings, and honest limitations — no SQL, no Python.
+          findings, and honest limitations - no SQL, no Python.
         </p>
       </div>
       <div className="relative z-10 w-full max-w-2xl">

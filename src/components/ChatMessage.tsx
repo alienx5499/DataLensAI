@@ -46,7 +46,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
               style={{ animationDelay: '300ms' }}
             />
           </span>
-          Analyzing your data…
+          Analyzing your data...
         </div>
       </div>
     );

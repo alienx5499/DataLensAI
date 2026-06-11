@@ -85,7 +85,7 @@ export function UploadZone() {
               </div>
             )}
             <h3 className="text-xl font-semibold tracking-tight text-balance">
-              {isLoading ? 'Processing your data…' : 'Drop in your data'}
+              {isLoading ? 'Processing your data...' : 'Drop in your data'}
             </h3>
             <p className="text-sm text-muted-foreground mt-2 text-pretty">
               CSV, JSON, or Excel · Up to 10MB

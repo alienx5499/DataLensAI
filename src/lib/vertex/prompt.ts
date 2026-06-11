@@ -21,14 +21,14 @@ ${
     : ''
 }
 
-User question: "${question}"
+User question: '${question}'
 
 Return EXACT JSON:
 {
- "chartConfig": {"type": "bar"|"line"|"scatter"|"pie"|"heatmap"|"distribution"|null, "title": "string", "xAxis": "string|null", "yAxis": "string|null", "data": [{"name": "string", "value": number}]},
- "findings": "Plain English insight (2-3 sentences).",
- "limitations": "What this analysis cannot tell us.",
- "stats": {"totalRows": number, "matchingRows": number},
- "suggestions": ["Follow-up 1", "Follow-up 2"]
+ 'chartConfig': {'type': 'bar'|'line'|'scatter'|'pie'|'heatmap'|'distribution'|null, 'title': 'string', 'xAxis': 'string|null', 'yAxis': 'string|null', 'data': [{'name': 'string', 'value': number}]},
+ 'findings': 'Plain English insight (2-3 sentences).',
+ 'limitations': 'What this analysis cannot tell us.',
+ 'stats': {'totalRows': number, 'matchingRows': number},
+ 'suggestions': ['Follow-up 1', 'Follow-up 2']
 }`;
 }

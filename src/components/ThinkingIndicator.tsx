@@ -46,7 +46,7 @@ export function ThinkingIndicator() {
           <p className="text-sm font-medium tracking-tight text-foreground/90">
             Thinking beautifully
           </p>
-          <p className="mt-1 text-xs text-muted-foreground/80">{stage}…</p>
+          <p className="mt-1 text-xs text-muted-foreground/80">{stage}...</p>
           <div className="mt-3 flex items-center gap-1.5">
             <span
               className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"

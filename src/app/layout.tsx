@@ -14,7 +14,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'DataLensAI — See your data. Ask anything.',
+  title: 'DataLensAI - See your data. Ask anything.',
   description: 'Drop in a CSV. Ask a business question. Get the full analysis.',
 };
 
