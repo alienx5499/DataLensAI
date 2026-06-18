@@ -1,5 +1,5 @@
 'use client';
-import { AlertCircle, Loader2, Sparkles, User } from 'lucide-react';
+import { AlertCircle, Sparkles, User } from 'lucide-react';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import { DataChart } from './chart/DataChart';
 import { FindingsRenderer } from './FindingsRenderer';
@@ -22,34 +22,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
   }
 
   if (message.isStreaming && !message.result) {
-    return (
-      <div className="flex gap-3 animate-in fade-in">
-        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <Loader2 className="w-4 h-4 text-primary animate-spin" />
-        </div>
-        <div
-          className="glass rounded-2xl rounded-tl-md px-4 py-3 flex items-center gap-2 text-sm text-muted-foreground"
-          role="status"
-          aria-live="polite"
-        >
-          <span className="flex gap-1" aria-hidden="true">
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce"
-              style={{ animationDelay: '0ms' }}
-            />
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce"
-              style={{ animationDelay: '150ms' }}
-            />
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce"
-              style={{ animationDelay: '300ms' }}
-            />
-          </span>
-          Analyzing your data...
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const result = message.result;

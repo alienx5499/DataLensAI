@@ -1,10 +1,10 @@
 'use client';
 import { FileJson, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/lib/store';
+import { useSessionStore } from '@/lib/store/session';
 
 export function ExportMenu() {
-  const session = useAppStore((s) => s.currentSession);
+  const session = useSessionStore((s) => s.currentSession);
 
   if (!session || session.entries.length === 0) return null;
 

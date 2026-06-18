@@ -22,10 +22,7 @@ export function DataTable({
 }) {
   const [page, setPage] = useState(0);
 
-  const columns = useMemo(
-    () => (data[0] ? Object.keys(data[0]) : []),
-    [data]
-  );
+  const columns = useMemo(() => (data[0] ? Object.keys(data[0]) : []), [data]);
 
   const rows = data.slice(page * pageSize, (page + 1) * pageSize);
   const totalPages = Math.ceil(data.length / pageSize);
@@ -37,10 +34,7 @@ export function DataTable({
     (count, row) =>
       count +
       columns.filter(
-        (col) =>
-          row[col] === null ||
-          row[col] === undefined ||
-          row[col] === ''
+        (col) => row[col] === null || row[col] === undefined || row[col] === ''
       ).length,
     0
   );
@@ -58,27 +52,37 @@ export function DataTable({
         <div className="grid grid-cols-2 md:grid-cols-5 gap-6 p-6 border-b border-border">
           <div>
             <p className="text-xs text-muted-foreground">Rows</p>
-            <p className="text-2xl font-bold tracking-tight text-primary">{data.length}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">
+              {data.length}
+            </p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Columns</p>
-            <p className="text-2xl font-bold tracking-tight text-primary">{totalColumns}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">
+              {totalColumns}
+            </p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Missing Values</p>
-            <p className="text-2xl font-bold tracking-tight text-primary">{missingValues}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">
+              {missingValues}
+            </p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Numeric Columns</p>
-            <p className="text-2xl font-bold tracking-tight text-primary">{numericColumns}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">
+              {numericColumns}
+            </p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Categorical</p>
-            <p className="text-2xl font-bold tracking-tight text-primary">{categoricalColumns}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">
+              {categoricalColumns}
+            </p>
           </div>
         </div>
 
@@ -99,7 +103,10 @@ export function DataTable({
 
             <TableBody>
               {rows.map((row, i) => (
-                <TableRow key={i} className="hover:bg-muted/50 transition-colors">
+                <TableRow
+                  key={i}
+                  className="hover:bg-muted/50 transition-colors"
+                >
                   {columns.map((c) => (
                     <TableCell key={c} className="text-xs font-mono">
                       {String(row[c] ?? '')}
@@ -113,8 +120,8 @@ export function DataTable({
 
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
           <p className="text-xs text-muted-foreground">
-            {page * pageSize + 1}-
-            {Math.min((page + 1) * pageSize, data.length)} of {data.length}
+            {page * pageSize + 1}-{Math.min((page + 1) * pageSize, data.length)}{' '}
+            of {data.length}
           </p>
 
           <div className="flex gap-1">
@@ -130,9 +137,7 @@ export function DataTable({
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setPage((p) =>
-                Math.min(totalPages - 1, p + 1)
-              )}
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page >= totalPages - 1}
             >
               <ChevronRight className="w-4 h-4" />
