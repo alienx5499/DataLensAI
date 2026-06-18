@@ -131,6 +131,23 @@ Responsible for:
 * Data transformation
 * Visualization rendering
 
+### Architecture Diagram
+
+<img width="5126" height="8192" alt="image" src="https://github.com/user-attachments/assets/25480329-ec2c-43e4-98a1-3f0b7397e435" />
+
+### Analyze Flow
+
+<img width="8191" height="3453" alt="image" src="https://github.com/user-attachments/assets/04b44423-2102-4357-8cae-57ec6fe0536a" />
+
+### State (Orchestrator Pattern)
+
+<img width="3665" height="1613" alt="image" src="https://github.com/user-attachments/assets/eda6bfa9-4e55-46a7-95dd-0373af8f129f" />
+
+### Vertex Fallback Chain
+
+<img width="3043" height="3460" alt="image" src="https://github.com/user-attachments/assets/8b56b6f6-87d7-4d6b-9cbb-56c6dcd4ed0a" />
+
+
 ---
 
 ## Project Workflow
