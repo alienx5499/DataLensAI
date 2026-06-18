@@ -102,7 +102,7 @@ export function AppShell() {
 
   return (
     <>
-      <header className="glass border-b border-border px-4 py-3 flex items-center justify-between shrink-0">
+      <header className="glass shadow-sm border-b border-border px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -113,7 +113,7 @@ export function AppShell() {
             <Menu className="w-5 h-5" />
           </Button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-sm shadow-primary/20">
               <BarChart3
                 className="w-4 h-4 text-primary-foreground"
                 strokeWidth={2.5}
