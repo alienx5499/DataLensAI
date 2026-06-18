@@ -38,14 +38,14 @@ export function ChatInput({
             <button
               key={i}
               onClick={() => !isLoading && onSend(s)}
-              className="shrink-0 text-xs px-3 py-1.5 rounded-full glass border border-border hover:border-primary/40 transition-colors"
+              className="shrink-0 text-xs px-3 py-1.5 rounded-full glass border border-border hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-colors"
             >
               {s}
             </button>
           ))}
         </div>
       )}
-      <div className="glass shadow-glass rounded-2xl p-2 flex items-end gap-2">
+      <div className="glass shadow-glass rounded-2xl p-2 flex items-end gap-2 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
         <textarea
           ref={ref}
           value={value}
@@ -59,7 +59,7 @@ export function ChatInput({
           placeholder="Ask anything about your data..."
           rows={1}
           disabled={isLoading}
-          className="flex-1 bg-transparent border-0 outline-none resize-none px-3 py-2 text-sm placeholder:text-muted-foreground/60 max-h-40"
+          className="flex-1 bg-transparent border-0 outline-none resize-none px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground/60 max-h-40"
         />
         <Button
           onClick={submit}

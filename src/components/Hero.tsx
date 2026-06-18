@@ -45,8 +45,8 @@ export function Hero() {
       <div className="relative z-10 w-full max-w-2xl">
         <UploadZone />
       </div>
-      <div className="relative z-10 mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full">
-        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10">
+      <div className="relative z-10 mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl w-full">
+        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-colors">
           <h3 className="text-sm font-semibold mb-1.5 text-white">
             Auto-profiled
           </h3>
@@ -54,7 +54,7 @@ export function Hero() {
             Schema, types, distributions detected.
           </p>
         </div>
-        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10">
+        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-colors">
           <h3 className="text-sm font-semibold mb-1.5 text-white">
             Honest insights
           </h3>
@@ -62,7 +62,7 @@ export function Hero() {
             Every finding states limitations.
           </p>
         </div>
-        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10">
+        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-colors">
           <h3 className="text-sm font-semibold mb-1.5 text-white">Iterative</h3>
           <p className="text-xs text-white/60 text-pretty">
             Follow-ups build on context.
