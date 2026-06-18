@@ -1,10 +1,14 @@
 'use client';
 import { FileSpreadsheet, Trash2, X } from 'lucide-react';
-import { useAppStore } from '@/lib/store';
+import { useSessionStore } from '@/lib/store/session';
+import { useHistoryStore } from '@/lib/store/history';
 import { Button } from '@/components/ui/button';
 
 export function HistorySidebar({ onClose }: { onClose?: () => void }) {
-  const { history, loadSession, deleteSession, currentSession } = useAppStore();
+  const history = useHistoryStore((s) => s.history);
+  const deleteSession = useHistoryStore((s) => s.deleteSession);
+  const loadSession = useSessionStore((s) => s.loadSession);
+  const currentSession = useSessionStore((s) => s.currentSession);
 
   return (
     <aside className="h-full glass border-r border-border flex flex-col">

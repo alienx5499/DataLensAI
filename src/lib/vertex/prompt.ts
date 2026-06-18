@@ -4,31 +4,34 @@ export function buildSystemPrompt(
   dataSample: unknown[],
   history: Array<{ question: string; findings: string }> = []
 ) {
-  return `You are DataLensAI, a rigorous data analyst.
-Respond with valid JSON only (no markdown).
+  const p = profile as {
+    rowCount?: number;
+    columns?: Array<{ name: string; type: string }>;
+  };
+  const schema =
+    p?.columns?.map((c) => `${c.name} (${c.type})`).join(', ') || 'unknown';
+  const sample = dataSample.slice(0, 3);
 
-Dataset profile:
-${JSON.stringify(profile, null, 2)}
+  return `You are DataLensAI, a rigorous data analyst. Always respond with valid JSON only (no markdown, no prose outside the JSON).
 
-Data sample (first 5 rows):
-${JSON.stringify(dataSample, null, 2)}
+Schema (${p?.rowCount || '?'} rows): ${schema}
+
+Sample rows:
+${JSON.stringify(sample)}
 
 ${
   history.length
-    ? `Previous Q&A:\n${history
-        .map((h, i) => `${i + 1}. Q: ${h.question}\n A: ${h.findings}`)
+    ? `Prior Q&A:\n${history
+        .map(
+          (h, i) =>
+            `${i + 1}. Q: ${h.question.slice(0, 100)}\n A: ${h.findings.slice(0, 300)}`
+        )
         .join('\n')}`
     : ''
 }
 
-User question: '${question}'
+Question: ${question}
 
-Return EXACT JSON:
-{
- 'chartConfig': {'type': 'bar'|'line'|'scatter'|'pie'|'heatmap'|'distribution'|null, 'title': 'string', 'xAxis': 'string|null', 'yAxis': 'string|null', 'data': [{'name': 'string', 'value': number}]},
- 'findings': 'Plain English insight (2-3 sentences).',
- 'limitations': 'What this analysis cannot tell us.',
- 'stats': {'totalRows': number, 'matchingRows': number},
- 'suggestions': ['Follow-up 1', 'Follow-up 2']
-}`;
+Return EXACT JSON shape:
+{"chartConfig":{"type":"bar|line|scatter|pie|null","title":"string","xAxis":"string","yAxis":"string","data":[{"name":"string","value":number}]},"findings":"2-3 sentence insight","limitations":"what this cannot tell us","stats":{"totalRows":number,"matchingRows":number},"suggestions":["follow-up 1","follow-up 2"]}`;
 }

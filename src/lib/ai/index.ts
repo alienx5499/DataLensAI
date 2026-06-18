@@ -4,13 +4,11 @@ import type { AIProvider, AIRequest } from './types';
 
 export * from './types';
 
-export const VertexProvider = { streamAnalysis };
-
 export function getProvider(): AIProvider {
   if (process.env.GCP_JSON_BASE64) {
     return {
-      stream(req: AIRequest): AsyncIterable<string> {
-        return streamAnalysis(
+      async *stream(req: AIRequest): AsyncIterable<string> {
+        yield* streamAnalysis(
           req.question,
           req.profile,
           req.dataSample,

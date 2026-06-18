@@ -6,21 +6,17 @@ import { ChatInput } from '@/components/ChatInput';
 import { ChatMessage } from '@/components/ChatMessage';
 import { HistorySidebar } from '@/components/HistorySidebar';
 import { ExportMenu } from '@/components/ExportMenu';
-import { useAppStore } from '@/lib/store';
+import { useSessionStore } from '@/lib/store/session';
+import { useChatStore } from '@/lib/store/chat';
+import { useAnalyze } from '@/lib/hooks/useAnalyze';
 import { ThinkingIndicator } from '@/components/ThinkingIndicator';
 import { DataTable } from '@/components/DataTable';
 
 export function AppShell() {
-  const {
-    currentSession,
-    messages,
-    data,
-    addUserMessage,
-    startStreaming,
-    finishStreaming,
-    isAnalyzing,
-  } = useAppStore();
-  if (!currentSession) return null;
+  const currentSession = useSessionStore((s) => s.currentSession);
+  const data = useSessionStore((s) => s.data);
+  const messages = useChatStore((s) => s.messages);
+  const { send, isAnalyzing, suggestions } = useAnalyze();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -31,74 +27,7 @@ export function AppShell() {
     });
   }, [messages]);
 
-  const handleSend = async (question: string) => {
-    if (!currentSession) return;
-    addUserMessage(question);
-    const id = startStreaming();
-
-    try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question,
-          profile: currentSession.profile,
-          dataSample: data.slice(0, 5),
-          history: messages
-            .filter((m) => m.role === 'assistant' && m.result)
-            .slice(-3)
-            .map((m) => ({
-              question: messages[messages.indexOf(m) - 1]?.content || '',
-              findings: m.result!.findings,
-            })),
-        }),
-      });
-
-      if (!res.ok || !res.body) {
-        finishStreaming(id, {
-          chartConfig: null,
-          findings: 'Analysis service unavailable.',
-          limitations: 'Check API configuration.',
-          stats: {},
-        });
-        return;
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: false });
-      }
-
-      try {
-        const result = JSON.parse(buffer);
-        finishStreaming(id, result);
-      } catch {
-        finishStreaming(id, {
-          chartConfig: null,
-          findings: 'Malformed response from server.',
-          limitations: 'Try rephrasing your question.',
-          stats: {},
-        });
-      }
-    } catch (err) {
-      finishStreaming(id, {
-        chartConfig: null,
-        findings: 'Network error.',
-        limitations: err instanceof Error ? err.message : 'Unknown',
-        stats: {},
-      });
-    }
-  };
-
-  const lastAssistant = [...messages]
-    .reverse()
-    .find((m) => m.role === 'assistant' && m.result);
-  const suggestions = lastAssistant?.result?.suggestions || [];
+  if (!currentSession) return null;
 
   return (
     <>
@@ -130,7 +59,7 @@ export function AppShell() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {currentSession && <ExportMenu />}
+          <ExportMenu />
         </div>
       </header>
 
@@ -182,17 +111,15 @@ export function AppShell() {
             </div>
           </div>
 
-          {currentSession && (
-            <div className="border-t border-border p-4 bg-background/50 backdrop-blur">
-              <div className="max-w-3xl mx-auto">
-                <ChatInput
-                  onSend={handleSend}
-                  isLoading={isAnalyzing}
-                  suggestions={suggestions}
-                />
-              </div>
+          <div className="border-t border-border p-4 bg-background/50 backdrop-blur">
+            <div className="max-w-3xl mx-auto">
+              <ChatInput
+                onSend={send}
+                isLoading={isAnalyzing}
+                suggestions={suggestions}
+              />
             </div>
-          )}
+          </div>
         </main>
       </div>
     </>

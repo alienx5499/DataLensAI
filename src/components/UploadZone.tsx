@@ -4,10 +4,10 @@ import { Upload, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { parseFile } from '@/lib/data-parser';
-import { useAppStore } from '@/lib/store';
+import { useSessionStore } from '@/lib/store/session';
 
 export function UploadZone() {
-  const setUpload = useAppStore((s) => s.setUpload);
+  const setUpload = useSessionStore((s) => s.setUpload);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
