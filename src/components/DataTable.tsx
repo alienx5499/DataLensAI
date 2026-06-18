@@ -55,30 +55,30 @@ export function DataTable({
     <Card className="glass shadow-glass">
       <CardContent className="p-0">
         {/* Dataset Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-4 border-b border-border">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 p-6 border-b border-border">
           <div>
             <p className="text-xs text-muted-foreground">Rows</p>
-            <p className="text-lg font-semibold">{data.length}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">{data.length}</p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Columns</p>
-            <p className="text-lg font-semibold">{totalColumns}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">{totalColumns}</p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Missing Values</p>
-            <p className="text-lg font-semibold">{missingValues}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">{missingValues}</p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Numeric Columns</p>
-            <p className="text-lg font-semibold">{numericColumns}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">{numericColumns}</p>
           </div>
 
           <div>
             <p className="text-xs text-muted-foreground">Categorical</p>
-            <p className="text-lg font-semibold">{categoricalColumns}</p>
+            <p className="text-2xl font-bold tracking-tight text-primary">{categoricalColumns}</p>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export function DataTable({
                 {columns.map((c) => (
                   <TableHead
                     key={c}
-                    className="text-xs font-medium text-muted-foreground"
+                    className="text-xs font-medium text-muted-foreground uppercase tracking-wider"
                   >
                     {c}
                   </TableHead>
@@ -99,7 +99,7 @@ export function DataTable({
 
             <TableBody>
               {rows.map((row, i) => (
-                <TableRow key={i}>
+                <TableRow key={i} className="hover:bg-muted/50 transition-colors">
                   {columns.map((c) => (
                     <TableCell key={c} className="text-xs font-mono">
                       {String(row[c] ?? '')}

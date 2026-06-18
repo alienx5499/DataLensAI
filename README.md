@@ -152,7 +152,17 @@ Responsible for:
 ### Prerequisites
 
 * Node.js 18+
-* npm or yarn
+* npm, yarn, or pnpm
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory and add your Google Cloud credentials for Vertex AI:
+
+```env
+GCP_PROJECT_ID=your-gcp-project-id
+GCP_LOCATION=your-gcp-region
+GCP_JSON_BASE64=your-base64-encoded-gcp-service-account-json
+```
 
 ### Setup
 
@@ -165,19 +175,23 @@ git clone <repository-url>
 Navigate into the project:
 
 ```bash
-cd ai-data-lens
+cd DataLensAI
 ```
 
 Install dependencies:
 
 ```bash
 npm install
+# or
+pnpm install
 ```
 
 Start the development server:
 
 ```bash
 npm run dev
+# or
+pnpm dev
 ```
 
 Open:
