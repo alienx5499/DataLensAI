@@ -15,6 +15,11 @@ export function UploadZone() {
 
   const handleFile = useCallback(
     async (file: File) => {
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      if (!ext || !['csv', 'json', 'xlsx'].includes(ext)) {
+        setError(`Unsupported file type: .${ext || ''}. Only .csv, .json, and .xlsx files are allowed.`);
+        return;
+      }
       setIsLoading(true);
       setError(null);
       try {
@@ -71,7 +76,7 @@ export function UploadZone() {
             <input
               ref={inputRef}
               type="file"
-              accept=".csv,.json,.xlsx,.xls"
+              accept=".csv,.json,.xlsx"
               className="hidden"
               onChange={(e) =>
                 e.target.files?.[0] && handleFile(e.target.files[0])

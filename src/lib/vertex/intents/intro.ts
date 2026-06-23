@@ -12,7 +12,7 @@ export const introIntent: IntentHandler = {
   handle() {
     const result: IntentResult = {
       chartType: 'bar',
-      title: 'DataLensAI - at a glance',
+      title: 'AI Data Lens - at a glance',
       data: [
         { name: 'CSV / JSON / Excel parsing', value: 100 },
         { name: 'Natural-language Q&A', value: 95 },
@@ -20,7 +20,7 @@ export const introIntent: IntentHandler = {
         { name: 'Limitations surfaced', value: 100 },
       ],
       findings:
-        "I'm DataLensAI - your autonomous data analysis partner. Upload any data file and ask questions in plain English. I surface the right visualization, synthesize findings, and flag limitations honestly. No SQL, no Python - just answers.\n\n**Try asking me**:\n• Show me the top performers\n• Plot a trend over time\n• Break down by category",
+        "I'm AI Data Lens - your autonomous data analysis partner. Upload any data file and ask questions in plain English. I surface the right visualization, synthesize findings, and flag limitations honestly. No SQL, no Python - just answers.\n\n**Try asking me**:\n• Show me the top performers\n• Plot a trend over time\n• Break down by category",
     };
     return result;
   },
