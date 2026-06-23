@@ -6,11 +6,13 @@ export async function parseFile(
   file: File
 ): Promise<{ data: Record<string, unknown>[]; profile: DataProfile }> {
   const ext = file.name.split('.').pop()?.toLowerCase();
-  let data: Record<string, unknown>[] = []; // eslint-disable-line no-useless-assignment
+  if (!ext || !['csv', 'json', 'xlsx'].includes(ext)) {
+    throw new Error(`Unsupported file type: .${ext || ''}. Only .csv, .json, and .xlsx files are allowed.`);
+  }
+  let data: Record<string, unknown>[] = [];
   if (ext === 'csv') data = await parseCSV(file);
   else if (ext === 'json') data = await parseJSON(file);
-  else if (ext === 'xlsx' || ext === 'xls') data = await parseExcel(file);
-  else throw new Error(`Unsupported format: ${ext}`);
+  else if (ext === 'xlsx') data = await parseExcel(file);
   const profile = createProfile(data, file.name, file.size);
   return { data, profile };
 }

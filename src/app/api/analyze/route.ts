@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { streamAnalysis } from '@/lib/vertex';
+import '@/lib/env-validation';
 import type { DataProfile } from '@/types';
 
 export const runtime = 'nodejs';
@@ -23,43 +24,38 @@ export async function POST(request: NextRequest) {
     }
 
     let resultText = '';
-    for await (const chunk of streamAnalysis(
-      question,
-      profile,
-      dataSample,
-      history
-    )) {
-      resultText += chunk;
-    }
-
-    resultText = resultText.trim();
-
-    // Strip markdown code fences if AI added them
-    if (resultText.startsWith('```')) {
-      resultText = resultText
-        .replace(/^```(?:json)?\s*/i, '')
-        .replace(/```\s*$/, '')
-        .trim();
-    }
-
-    if (!resultText) {
-      return new Response(JSON.stringify({ error: 'Empty response from AI' }), {
-        status: 500,
-      });
-    }
-
-    // Validate JSON before sending
     try {
+      for await (const chunk of streamAnalysis(
+        question,
+        profile,
+        dataSample,
+        history
+      )) {
+        resultText += chunk;
+      }
+
+      resultText = resultText.trim();
+
+      // Strip markdown code fences if AI added them
+      if (resultText.startsWith('```')) {
+        resultText = resultText
+          .replace(/^```(?:json)?\s*/i, '')
+          .replace(/```\s*$/, '')
+          .trim();
+      }
+
+      if (!resultText) {
+        throw new Error('Empty response from AI');
+      }
+
+      // Validate JSON before sending
       JSON.parse(resultText);
-    } catch {
+    } catch (e) {
+      const errorMsg = e instanceof Error ? e.message : String(e);
+      console.error('[AI Data Lens] Pipeline error:', errorMsg);
       return new Response(
-        JSON.stringify({
-          chartConfig: null,
-          findings: resultText.substring(0, 500) || 'No response from AI',
-          limitations: 'The AI response could not be parsed as JSON.',
-          stats: {},
-        }),
-        { headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: `Analysis failed: unable to interpret dataset. Details: ${errorMsg}` }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -72,6 +68,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Analysis error:', msg);
-    return new Response(JSON.stringify({ error: msg }), { status: 500 });
+    return new Response(JSON.stringify({ error: `Analysis failed: ${msg}` }), { status: 500 });
   }
 }

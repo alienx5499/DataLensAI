@@ -33,11 +33,21 @@ export function useAnalyze() {
         }),
       });
       if (!res.ok) {
+        const errorText = await res.text();
+        let errorMessage = 'unable to interpret dataset';
+        try {
+          const errorObj = JSON.parse(errorText);
+          if (errorObj.error) {
+            errorMessage = errorObj.error.replace(/^Analysis failed:\s*/i, '');
+          }
+        } catch {
+          // ignore parsing error, fallback to default error message
+        }
         finishStreaming(
           id,
           errorResult(
-            'Analysis service unavailable.',
-            'Check API configuration.'
+            `Analysis failed: ${errorMessage}`,
+            'Please try again with a different question or verify the dataset structure.'
           )
         );
         return;
@@ -54,10 +64,11 @@ export function useAnalyze() {
           )
         );
       }
-    } catch {
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
       finishStreaming(
         id,
-        errorResult('Network error.', 'Check your connection and try again.')
+        errorResult('Network error.', `Details: ${msg}. Check your connection and try again.`)
       );
     }
   };

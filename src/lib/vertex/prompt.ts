@@ -12,7 +12,7 @@ export function buildSystemPrompt(
     p?.columns?.map((c) => `${c.name} (${c.type})`).join(', ') || 'unknown';
   const sample = dataSample.slice(0, 3);
 
-  return `You are DataLensAI, a rigorous data analyst. Always respond with valid JSON only (no markdown, no prose outside the JSON).
+  return `You are AI Data Lens, a rigorous data analyst. Always respond with valid JSON only (no markdown, no prose outside the JSON).
 
 Schema (${p?.rowCount || '?'} rows): ${schema}
 

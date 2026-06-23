@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import '@/lib/env-validation';
 import './globals.css';
 
 const inter = Inter({
@@ -14,7 +15,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'DataLensAI - See your data. Ask anything.',
+  title: 'AI Data Lens - See your data. Ask anything.',
   description: 'Drop in a CSV. Ask a business question. Get the full analysis.',
 };
 

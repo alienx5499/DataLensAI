@@ -27,7 +27,18 @@ export function AppShell() {
     });
   }, [messages]);
 
-  if (!currentSession) return null;
+  if (!currentSession) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
+        <div className="max-w-md mx-auto space-y-4">
+          <p className="text-lg font-medium text-white">No dataset uploaded yet</p>
+          <p className="text-sm">
+            Please upload a dataset (.csv, .xlsx, or .json) on the home page to start analyzing your data with AI Data Lens.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -50,7 +61,7 @@ export function AppShell() {
             </div>
             <div>
               <h1 className="text-sm font-semibold tracking-tight">
-                DataLensAI
+                AI Data Lens
               </h1>
               <p className="text-[10px] text-muted-foreground leading-none">
                 Conversational analytics
